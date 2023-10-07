@@ -1,0 +1,150 @@
+disable player
+
+var currentframe = 0
+
+var pickupframes = [ascii
+###,\\
+#(‾   )
+#//‾‾\\
+asciiend
+^,ascii
+###,\\
+#(‾   )
+#//‾/‾\
+asciiend
+^,ascii
+###,\\
+#(‾   )
+#//‾‾\\
+asciiend
+^]
+
+var frames = [ascii
+###,\\
+#(‾   )
+##||||
+asciiend
+^,ascii
+###,\\
+#(‾   )
+#//‾‾\\
+asciiend
+^,ascii
+###,\\
+#(‾   )
+##||||
+asciiend
+^,ascii
+###,\\
+#(‾   )
+##\\//
+asciiend
+^]
+
+var flippedframes = [ascii
+##//.
+#(   ‾)
+##||||
+asciiend
+^,ascii
+##//.
+#(   ‾)
+#//‾‾\\
+asciiend
+^,ascii
+##//.
+#(   ‾)
+##||||
+asciiend
+^,ascii
+##//.
+#(   ‾)
+##\\//
+asciiend
+^]
+
+var faces = [ascii
+####··#
+asciiend
+^,ascii
+####--#
+asciiend
+^,ascii
+####><#
+asciiend
+^,ascii
+####..#
+asciiend
+^]
+
+var flippedfaces = [ascii
+#··####
+asciiend
+^,ascii
+#--####
+asciiend
+^,ascii
+#><####
+asciiend
+^,ascii
+#..####
+asciiend
+^]
+
+var animTime = 0
+var animFace = 0
+var lasthp = -1
+var hurtTime = 0
+var pickuptime = 0
+var isPickup = false
+var lastpickup = -5
+var counttime = 0
+
+func animatePlayer()
+  ?ai.walking
+    ?animTime % 7 = 0
+      currentframe = (currentframe + 1) %
+      ^(frames.Count() - 0)
+  :
+    animTime = 0
+  ?lasthp <= hp
+    ?time % 160 > 5
+      animFace = 0
+    :
+      animFace = 1
+  :
+    hurtTime = 15
+
+animTime++
+animatePlayer()
+lasthp = hp
+hurtTime--
+pickuptime--
+
+?face = ",,"
+  counttime++
+  pickuptime = 2
+  ?time - lastpickup
+>@counttime@
+
+isPickup = (pickuptime > 0) & (pickup.distance < 5)
+
+?isPickup
+  ?player.direction = 1
+  >o-3,1,@frames[currentframe]@
+:
+  >o-3,1,@flippedframes[currentframe]@
+:?player.direction = 1
+  >o-3,1,@frames[currentframe]@
+:
+  >o-3,1,@flippedframes[currentframe]@
+?hurtTime > 0
+  ?player.direction = 1
+    >o-3,2,@faces[2]@
+  :
+    >o-3,2,@flippedfaces[2]@
+:
+  ?player.direction = 1
+    >o-3,2,@faces[animFace]@
+  :
+    >o-3,2,@flippedfaces[animFace]@
