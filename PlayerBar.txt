@@ -1,0 +1,198 @@
+disable hud p
+
+var pH = 0
+var pMH = 0
+var pA = 0
+var pAF = 0
+var pMA = 0
+var Bar = [ascii
+################
+asciiend
+^,ascii
+▒###############
+asciiend
+^,ascii
+█###############
+asciiend
+^,ascii
+█▒##############
+asciiend
+^,ascii
+██##############
+asciiend
+^,ascii
+██▒#############
+asciiend
+^,ascii
+███#############
+asciiend
+^,ascii
+███▒############
+asciiend
+^,ascii
+████############
+asciiend
+^,ascii
+████▒###########
+asciiend
+^,ascii
+█████###########
+asciiend
+^,ascii
+█████▒##########
+asciiend
+^,ascii
+██████##########
+asciiend
+^,ascii
+██████▒#########
+asciiend
+^,ascii
+███████#########
+asciiend
+^,ascii
+███████▒########
+asciiend
+^,ascii
+████████########
+asciiend
+^,ascii
+████████▒#######
+asciiend
+^,ascii
+█████████#######
+asciiend
+^,ascii
+█████████▒######
+asciiend
+^,ascii
+██████████######
+asciiend
+^,ascii
+██████████▒#####
+asciiend
+^,ascii
+███████████#####
+asciiend
+^,ascii
+███████████▒####
+asciiend
+^,ascii
+████████████####
+asciiend
+^,ascii
+████████████▒###
+asciiend
+^,ascii
+█████████████###
+asciiend
+^,ascii
+█████████████▒##
+asciiend
+^,ascii
+██████████████##
+asciiend
+^,ascii
+██████████████▒#
+asciiend
+^,ascii
+███████████████#
+asciiend
+^,ascii
+███████████████▒
+asciiend
+^,ascii
+████████████████
+asciiend
+^]
+
+var HPsize = (Bar.Count() - 1)
+var ARMsize = (Bar.Count() - 1)
+
+var barsX = math.RoundToInt(screen.w / 7)
+var barsY = screen.h - 1
+
+var playerName = player.name
+
+?loc.begin
+  pH = 1
+  pMH = 1
+  pA = 1
+  pAF = 1
+  pMA = 1
+
+pH = hp
+pMH = maxhp
+pA = armor
+pAF = armor.f
+?maxarmor > 0
+  pMA = maxarmor
+?maxarmor < armor | !(maxarmor > 0)
+  pMA = armor
+
+func Draw(barsX,A,AF,MA,H,MH,Name,Buffs,Debuffs)
+  ?loc = uulaa_shop
+    return
+  ?H < 0
+    H = 0
+  >`@barsX@,@screen.h - 1@,#20C020,
+  ^║@Bar[math.Clamp((H * HPsize) / MH, 0, HPsize)]@║
+  >`@barsX - string.Size("" + H) - 1@
+  ^,@screen.h - 1@,
+  ^@H@
+  >`@barsX + 19@
+  ^,@screen.h - 1@,
+  ^@MH@
+  >`@barsX@, @screen.h - 2@,#20C020,
+  ^¸________________¸
+
+  ?MA < A | !(MA > 0)
+    MA = A
+  
+  ?A > 0 | MA > 0
+    >`@barsX@
+    ^,@screen.h - 2@,#50D0C0,
+    ^║@Bar[math.Clamp(((A * 10 + AF) * ARMsize) / (MA * 10), 0, ARMsize)]@║
+    ?AF > 0
+      >`@barsX - string.Size(" " + A + "." + AF) - 1@
+      ^,@screen.h - 2@,
+      ^@A@.@AF@
+    :
+      >`@barsX - string.Size("" + A) - 1@
+      ^,@screen.h - 2@,
+      ^@A@
+    
+    >`@barsX + 19@
+    ^,@screen.h - 2@,
+    ^@MA@
+    >`@barsX@, @screen.h - 3@,#50D0C0,
+    ^¸________________¸
+  
+  ?Name & (A > 0 | MA > 0)
+    >`@math.Round((barsX + 9) - (string.Size(Name) / 2.0))@, @screen.h - 4@,#FFFFFF,
+    ^@Name@
+  :?Name
+    >`@math.Round((barsX + 9) - (string.Size(Name) / 2.0))@, @screen.h - 3@,#FFFFFF,
+    ^@Name@
+  ?Buffs & (A > 0 | MA > 0)
+    >`@math.Round((barsX + 9) - (string.Size(Buffs) / 2.0))@, @screen.h - 5@,#A0FFA0,
+    ^@Buffs@
+  :?Buffs
+    >`@math.Round((barsX + 9) - (string.Size(Buffs) / 2.0))@, @screen.h - 4@,#A0FFA0,
+    ^@Buffs@
+  ?Debuffs & (A > 0 | MA > 0)
+    >`@math.Round((barsX + 9) - (string.Size(Debuffs) / 2.0))@, @screen.h - 6@,#FFA0A0,
+    ^@Debuffs@
+  :?Debuffs
+    >`@math.Round((barsX + 9) - (string.Size(Debuffs) / 2.0))@, @screen.h - 5@,#FFA0A0,
+    ^@Debuffs@
+
+var toggle = true
+?key = bumpLBegin
+  toggle = !toggle
+
+?toggle
+  disable hud p
+  Draw(barsX,pA,pAF,pMA,pH,pMH,playerName,buffs.string,debuffs.string)
+:
+  enable hud p

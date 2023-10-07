@@ -1,0 +1,110 @@
+/*
+  Script Info:
+    Afk Grinder (works best in dead wood canyon)
+    Items:
+      skeleton arm
+      ourobus
+      compound shield
+      repeating crossbow
+      (harvest:)
+        hatchet
+        shovel
+
+  Recommended Dependencies:
+    import PlayerBar
+    import FoeBar
+*/
+
+var Loops = -1
+var BestTime = 0
+
+?loc.begin | loc.loop
+  brew tar
+  Loops++
+
+
+
+
+?(foe.distance < 15) |
+^(!(buffs.string = pick_pocket) &
+^foe.distance < 40) &
+^!(foe.hp <= 0)
+  equip skele
+  ?foe.distance <= 13 & item.GetCooldown(
+  ^＂skeleton_arm＂) <= 0 & buffs.string = 
+  ^pick_pocket
+    activate R
+:
+  equipL ouro
+  equipR comp
+
+?foe.distance <= 23 &
+^!(foe = immune_to_ranged) &
+^foe.distance >=15 &
+^!(foe.hp <= 0) &
+^foe.count >= 3
+  equip repeat
+
+?harvest.distance <= 32
+  ?harvest = tree
+    equipR hatchet
+      ?harvest.distance <= 7 &
+      ^item.GetCooldown(＂hatchet＂) <= 0
+        activate R
+  ?harvest = boulder
+    equip shovel
+
+?item.GetCooldown(＂skeleton_arm＂) <= 0& buffs.string = 
+  ^pick_pocket
+  >`4,6,#A0FFA0,Ready!
+
+?hp < 7
+  activate potion
+
+var zize = 0
+var xize = 0
+zize = string.Size(Loops + ＂ loops done!＂)
+xize = string.Size(＂Best Time: ＂ + BestTime)
+var bgwidth = 0
+bgwidth = (screen.w/2)-((math.Max(zize, 0)
+^/2)+2)
+var style = 0
+style = 1
+var potx = 0
+var poty = 0
+var potname = ＂N/A＂
+
+disable hud
+//7,4
+
+?item.potion = healing
+  potname = ＂Heal＂
+:?item.potion = defensive
+  potname = ＂Def＂
+
+?item.potion ! empty
+  draw.Box(2, 1,10,5, #303030
+  ^,style)
+
+  >`@7-(string.size(potname) / 2)@,3
+  ^,#ffffff,@potname@
+
+?hp < 10
+  activate potion
+
+?Loops > 0
+  draw.Box(bgwidth, 1, (math.Max(zize, 0)+4)
+  ^,3, #303030
+  ^,style)
+  >`@(screen.w / 2) - (zize / 2)
+  ^@,2,#04FFF7
+  ^,@Loops@ loops done!
+
+  /*
+  best time (if it worked
+
+  >`@(screen.w / 2) - 
+  ^(string.Size(＂Best Time: ＂ + BestTime) / 2)@
+  ^,3,#04FFF7
+  ^,Best Time: @BestTime@
+  */

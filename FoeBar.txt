@@ -1,0 +1,52 @@
+
+/*
+  FoeBar
+
+  Dependencies
+    PlayerBar
+*/
+
+var Bar = new PlayerBar
+var A = 1
+var MA = 1
+var H = 1
+var MH = 1
+var Name = "N/A"
+var BFS = ""
+var DBFS = ""
+
+var arrow = ascii
+#|
+\|/
+#V
+asciiend
+
+?foe
+  A = foe.armor
+  MA = foe.maxarmor
+  H = foe.hp
+  MH = foe.maxhp
+  Name = foe.name
+  BFS = foe.buffs.string
+  DBFS = foe.debuffs.string
+  >f0,@((time / 6) % 2) - 4@,#FF0000,@arrow@
+:
+  A = 1
+  MA = 1
+  H = 1
+  MH = 1
+  Name = "N/A"
+  BFS = ""
+  DBFS = ""
+
+
+
+var toggle = true
+?key = bumpRBegin
+  toggle = !toggle
+
+?toggle & foe
+  disable hud f
+  Bar.Draw(math.RoundToInt(screen.w / 1.5),A,0,MA,H,MH,Name,BFS,DBFS)
+:
+  enable hud f
