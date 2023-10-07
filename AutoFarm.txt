@@ -10,9 +10,9 @@
         hatchet
         shovel
 
-  Cool Dependencies:
-  import PlayerBar
-  import FoeBar
+  Recommended Dependencies:
+    import PlayerBar
+    import FoeBar
 */
 
 var Loops = -1
