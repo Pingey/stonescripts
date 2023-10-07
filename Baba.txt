@@ -1,3 +1,10 @@
+/*
+  Baba Player Sprite
+
+  Dependencies
+    None
+*/
+
 disable player
 
 var currentframe = 0
