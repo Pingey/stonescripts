@@ -1,3 +1,11 @@
+
+/*
+  FoeBar
+
+  Dependencies
+    PlayerBar
+*/
+
 var Bar = new PlayerBar
 var A = 1
 var MA = 1
